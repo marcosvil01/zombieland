@@ -2,6 +2,8 @@
 
 Juego multijugador de supervivencia zombie en 2D pixel art. Explora una ciudad post-apocalíptica, saquea edificios, encuentra armas, conduce vehículos y sobrevive a oleadas interminables de zombies — solo o con amigos.
 
+> **⚠️ Aviso:** Este es un proyecto hecho de forma bastante regular — es un juego funcional pero lejos de estar pulido. El apartado visual en particular es muy básico, ya que usa assets públicos gratuitos mezclados entre sí sin un estilo visual unificado. No esperes calidad profesional, es más un experimento/prototipo que otra cosa.
+
 **[▶ Jugar online](https://zombieland.mvasl.net)**
 
 ---
