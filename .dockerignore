@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output (rebuilt in Docker)
+dist/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docs / innecesarios
+*.md
+*.txt
+sprites.txt
+LICENSE*
+
+# Carpetas de assets innecesarias (PSD, macOS, previews)
+assets/__MACOSX/
+assets/PSD/
+assets/Zombie_1/
+assets/Zombie_2/
+assets/Zombie_3/
+assets/Zombie_4/
+assets/Free-Homeless-Character-Sprite-Sheets-Pixel-Art/
+assets/CP_V1.1.0_nyknck/
+assets/**/Gif/
+assets/**/PSD/
+assets/**/Previev/
+
+# Docker files (excepto nginx.conf que se necesita en el build)
+Dockerfile
+docker-compose.yml
+.dockerignore
+deploy-*.ps1

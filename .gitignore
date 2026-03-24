@@ -1,0 +1,47 @@
+# ── Build output ──
+dist/
+node_modules/
+server/node_modules/
+*.tar.gz
+
+# ── Environment & secrets ──
+.env
+.env.*
+deploy-zombieland.ps1
+
+# ── macOS metadata ──
+assets/__MACOSX/
+.DS_Store
+Thumbs.db
+
+# ── Unused asset packs (not referenced in code) ──
+assets/Zombie_1/
+assets/Zombie_2/
+assets/Zombie_3/
+assets/Zombie_4/
+assets/PSD/
+assets/Free-Homeless-Character-Sprite-Sheets-Pixel-Art/
+assets/CP_V1.1.0_nyknck/
+
+# ── Preview/source folders inside assets ──
+assets/**/Gif/
+assets/**/PSD/
+assets/**/Previev/
+assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/
+assets/Guns_V1.01 - Commission - Copy/Other/
+
+# ── Archives (original zips of asset packs) ──
+*.zip
+
+# ── Docs/metadata inside asset folders ──
+assets/**/*.txt
+assets/**/*.pdf
+assets/**/*.url
+assets/**/*.png.import
+assets/COUPON.png
+sprites.txt
+
+# ── IDE ──
+.vscode/
+*.swp
+*~

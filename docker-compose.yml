@@ -1,0 +1,98 @@
+# =============================================================================
+# Zombieland — zombieland.mvasl.net (PRODUCCIÓN — VPS OVH)
+# =============================================================================
+# app: Servidor estático (nginx:alpine) — archivos del juego
+# ws:  Servidor WebSocket (Node.js) — multiplayer relay
+# Footprint total: ~40MB RAM
+# =============================================================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zombieland-app
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp:size=8m
+    networks:
+      - traefik-proxy
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: '0.15'
+        reservations:
+          memory: 16M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/index.html || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      # ── Traefik routing ─────────────────────────────────────
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-proxy"
+
+      # HTTPS router — zombieland.mvasl.net (catch-all, lower priority)
+      - "traefik.http.routers.zombieland.rule=Host(`zombieland.mvasl.net`)"
+      - "traefik.http.routers.zombieland.entrypoints=websecure"
+      - "traefik.http.routers.zombieland.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.zombieland.middlewares=security-headers@file,gzip-compress@file,rate-limit-global@file"
+      - "traefik.http.routers.zombieland.priority=1"
+
+      # Service port
+      - "traefik.http.services.zombieland.loadbalancer.server.port=8080"
+
+  ws:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: zombieland-ws
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - CORS_ORIGIN=https://zombieland.mvasl.net
+    networks:
+      - traefik-proxy
+    deploy:
+      resources:
+        limits:
+          memory: 48M
+          cpus: '0.10'
+        reservations:
+          memory: 24M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-proxy"
+
+      # WebSocket router — /socket.io/ path (higher priority)
+      - "traefik.http.routers.zombieland-ws.rule=Host(`zombieland.mvasl.net`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.zombieland-ws.entrypoints=websecure"
+      - "traefik.http.routers.zombieland-ws.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.zombieland-ws.priority=10"
+
+      # Service port
+      - "traefik.http.services.zombieland-ws.loadbalancer.server.port=3001"
+
+networks:
+  traefik-proxy:
+    external: true
